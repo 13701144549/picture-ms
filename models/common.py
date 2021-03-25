@@ -10,7 +10,7 @@ from .base import BaseModel
 from utils.constant import UserStatus
 
 from flask_security import current_user, UserMixin
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +26,7 @@ class User(BaseModel, UserMixin):
     email = db.Column(db.String(150), default='', comment='邮箱')  #: 邮箱
     gender = db.Column(db.String(15), default='', comment='性别')  # 性别
     status = db.Column(db.Integer, default=UserStatus.OPEN, comment='状态')  # 状态
+    active = db.Column(db.Boolean(), default=True, comment='激活状态')  #: 激活状态
 
     def __repr__(self):
         return "<Db.Model.User:%r>" % self.username
@@ -49,8 +50,7 @@ class User(BaseModel, UserMixin):
         :param raw_password: 待校验的密码
         :return: True/False
         """
-        raw_hash_pwd = generate_password_hash(raw_password)
-        return self.password == raw_hash_pwd
+        return check_password_hash(self.password, raw_password)
 
 
 class Pictures(BaseModel):

@@ -14,6 +14,7 @@ from flask_wtf import CSRFProtect
 from flask_cors import CORS
 from flask_marshmallow import Marshmallow
 
+from utils.request_hook import RequestHook
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -21,20 +22,26 @@ csrf = CSRFProtect()
 api = Api()
 session = Session()
 ma = Marshmallow()
+request_hook = RequestHook()
 
 
-def init_extension(app):
+def init_extension(app, models):
     api.init_app(app)
     db.init_app(app)
     Migrate(app=app, db=db)
     session.init_app(app)
     ma.init_app(app)
+    request_hook.init_app(app)
     # flask_wtf
     csrf.init_app(app)
     # 跨域支持
     CORS(app, supports_credentials=True)
 
     login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return models.User.query.filter_by(id=user_id).first()
     # 指定登录的端点
     login_manager.login_view = 'security.login'
     # 设置session保护级别

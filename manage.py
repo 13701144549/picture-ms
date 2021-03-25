@@ -21,10 +21,9 @@ def create_manager():
     # logging_config = app.config.get("CRLOGGING")
     # LoggingManager(logging_config, BASE_DIR)
     # print("Using logging config: ", logging_config)
-
     # 注册通用blueprint
     app.register_blueprint(v1_bp_api_admin)
-    init_extension(app=app)
+    init_extension(app=app, models=models)
     manager = Manager(app=app)
     manager.add_command('db', MigrateCommand)
     return app, manager
