@@ -7,8 +7,8 @@
 from flask import Blueprint
 from flask_restplus import Api
 
-from v1.picture.view import v1_picture_admin
-from v1.user.view import v1_user_admin
+from apis.v1.picture.view import v1_picture_admin
+from apis.v1.user.view import v1_user_admin
 
 v1_bp_api_admin = Blueprint('v1_api_admin', __name__, url_prefix='/app/api_admin/v1')
 
